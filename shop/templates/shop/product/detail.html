@@ -1,0 +1,138 @@
+{% extends "shop/base/base.html" %}
+{% load static %}
+  
+  {% block title %}
+
+  {{ product.name }}
+
+ {% endblock %}
+
+
+
+ {% block content %}
+  
+  <body>
+   
+      <!--  Modal -->
+      <div class="modal fade" id="productView" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content overflow-hidden border-0">
+            <button class="btn-close p-4 position-absolute top-0 end-0 z-index-20 shadow-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body p-0">
+              <div class="row align-items-stretch">
+                <div class="col-lg-6 p-lg-0"><a class="glightbox product-view d-block h-100 bg-cover bg-center" style="background: url(img/product-5.jpg)" href="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" data-gallery="gallery1" data-glightbox="Red digital smartwatch"></a><a class="glightbox d-none" href="img/product-5-alt-1.jpg" data-gallery="gallery1" data-glightbox="Red digital smartwatch"></a><a class="glightbox d-none" href="img/product-5-alt-2.jpg" data-gallery="gallery1" data-glightbox="Red digital smartwatch"></a></div>
+                <div class="col-lg-6">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section class="py-5">
+        <div class="container">
+          <div class="row mb-5">
+            <!-- PRODUCT DETAILS-->
+
+            <div class="product-detail">
+              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+              <h1>{{ product.name }}</h1>
+              <h2>
+              <a href="{{ product.category.get_absolute_url }}">
+              
+              </a>
+              </h2>
+              <p class="price">${{ product.price }}</p>
+
+              <form action="{% url "cart:cart_add" product.id %}" method="post">
+                {{ cart_product_form }}
+                {% csrf_token %}
+                <input type="submit" value="Add to cart">
+               </form>
+
+               <br>     </br>
+
+                <!-- DETAILS TABS-->
+          <ul class="nav nav-tabs border-0" id="myTab" role="tablist">
+            <li class="nav-item"><a class="nav-link text-uppercase active" id="description-tab" data-bs-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a></li>
+        
+          </ul>
+          <div class="tab-content mb-5" id="myTabContent">
+            <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+              <div class="p-4 p-lg-5 bg-white">
+                <h6 class="text-uppercase">Product description </h6>
+                <p class="text-muted text-sm mb-0">{{ product.description|linebreaks }}</p>
+              </div>
+            </div>
+           
+          </div>
+              
+              </div>
+          </div>
+
+
+         
+          
+
+
+
+         {% if recommended_products %}
+          <!-- RELATED PRODUCTS-->
+          <h2 class="h5 text-uppercase mb-4">Related products</h2>
+          {% for p in recommended_products %}
+          <div class="row">
+            <!-- PRODUCT-->
+            <div class="col-lg-3 col-sm-6">
+              <div class="product text-center skel-loader">
+                <div class="d-block mb-3 position-relative"><a class="d-block" href={{ p.get_absolute_url }}><img class="img-fluid w-100" src="{% if p.image %}{{ p.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="..."></a>
+                  <div class="product-overlay">
+                    <ul class="mb-0 list-inline">
+                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#!"><i class="far fa-heart"></i></a></li>
+                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="#!">Add to cart</a></li>
+                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-bs-toggle="modal"><i class="fas fa-expand"></i></a></li>
+                    </ul>
+                  </div>
+                </div>
+                <h6> <a class="reset-anchor" href="{{ p.get_absolute_url }}">{{ p.name }}</a></h6>
+                <p class="small text-muted">$250</p>
+              </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+          
+          </div>
+        </div>
+      </section>
+     
+      <!-- JavaScript files-->
+     
+      <script>
+        // ------------------------------------------------------- //
+        //   Inject SVG Sprite - 
+        //   see more here 
+        //   https://css-tricks.com/ajaxing-svg-sprite/
+        // ------------------------------------------------------ //
+        function injectSvgSprite(path) {
+        
+            var ajax = new XMLHttpRequest();
+            ajax.open("GET", path, true);
+            ajax.send();
+            ajax.onload = function(e) {
+            var div = document.createElement("div");
+            div.className = 'd-none';
+            div.innerHTML = ajax.responseText;
+            document.body.insertBefore(div, document.body.childNodes[0]);
+            }
+        }
+        // this is set to BootstrapTemple website as you cannot 
+        // inject local SVG sprite (using only 'icons/orion-svg-sprite.svg' path)
+        // while using file:// protocol
+        // pls don't forget to change to your domain :)
+        injectSvgSprite('https://bootstraptemple.com/files/icons/orion-svg-sprite.svg'); 
+        
+      </script>
+      <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    </div>
+  </body>
+  {% endblock %}
